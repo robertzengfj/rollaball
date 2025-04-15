@@ -3,5 +3,8 @@
   "uuid": "43ab599c-4e08-47e4-bce1-239131b8f329",
   "creator": {
     "version": "3.8.6"
+  },
+  "dependencies": {
+    "rollaball": "file:"
   }
 }
