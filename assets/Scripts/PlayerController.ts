@@ -1,4 +1,5 @@
 import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3,Collider, ICollisionEvent } from 'cc';
+import { FoodController } from './FoodController';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -33,6 +34,10 @@ export class PlayerController extends Component {
     }
     onCollisionEnter(event:ICollisionEvent){
         console.log("onCollisionEnter")
+        const food=event.otherCollider.getComponent(FoodController)
+        if(food!==null){
+            food.node.destroy()
+        }
     }
     onCollisionExit(event:ICollisionEvent){
         console.log("onCollisionExit")
