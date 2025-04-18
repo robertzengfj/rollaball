@@ -1,4 +1,4 @@
-import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2 } from 'cc';
+import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -6,6 +6,15 @@ export class PlayerController extends Component {
     private moveDir:Vec2=Vec2.ZERO;
     @property
     public speed:number=5
+    @property
+    public moveForce:number=5
+
+
+    private rgd:RigidBody=null
+
+    protected start():void{
+        this.rgd=this.getComponent(RigidBody)//获取刚体组件
+    }
 
     protected onLoad(): void {
         console.log("PlayerController loaded");
@@ -115,7 +124,8 @@ export class PlayerController extends Component {
         // }
     }
     protected update(dt: number): void {
-        const pos=this.node.position
-        this.node.setPosition(pos.x+this.moveDir.y*this.speed*dt,pos.y,pos.z+this.moveDir.x*this.speed*dt)
+        // const pos=this.node.position
+        // this.node.setPosition(pos.x+this.moveDir.y*this.speed*dt,pos.y,pos.z+this.moveDir.x*this.speed*dt)
+        this.rgd.applyForce(new Vec3(this.moveDir.y,0,this.moveDir.x).multiplyScalar(this.moveForce),);
     }
 }
