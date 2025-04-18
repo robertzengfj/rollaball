@@ -1,4 +1,4 @@
-import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3 } from 'cc';
+import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3,Collider, ICollisionEvent } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -12,20 +12,41 @@ export class PlayerController extends Component {
 
     private rgd:RigidBody=null
 
+    private collider:Collider=null
+
     protected start():void{
         this.rgd=this.getComponent(RigidBody)//获取刚体组件
+        this.collider=this.node.getComponent(Collider)//获取碰撞体组件
+        console.log(this.collider)
+        this.collider.on('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
+        this.collider.on('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
+        this.collider.on('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
     }
 
     protected onLoad(): void {
+       
+
         console.log("PlayerController loaded");
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.on(Input.EventType.KEY_PRESSING, this.onKeyPressing, this);
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
     }
+    onCollisionEnter(event:ICollisionEvent){
+        console.log("onCollisionEnter")
+    }
+    onCollisionExit(event:ICollisionEvent){
+        console.log("onCollisionExit")
+    }
+    onCollisionStay(event:ICollisionEvent){
+        console.log("onCollisionStay")
+    }
     onDestroy (): void {
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.off(Input.EventType.KEY_PRESSING, this.onKeyPressing, this);
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
+        this.collider.off('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
+        this.collider.off('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
+        this.collider.off('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
     }
     onKeyDown(event:EventKeyboard){
         // console.log("Key Down: ", event.keyCode);
