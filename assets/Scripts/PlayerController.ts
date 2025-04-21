@@ -1,4 +1,5 @@
-import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3,Collider, ICollisionEvent } from 'cc';
+import { _decorator, Component, Node,Input,input, EventKeyboard,KeyCode, Vec2, RigidBody,Vec3,Collider, ICollisionEvent, TriggerEventType, ITriggerEvent } from 'cc';
+import { FoodController } from './FoodController';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -18,9 +19,10 @@ export class PlayerController extends Component {
         this.rgd=this.getComponent(RigidBody)//获取刚体组件
         this.collider=this.node.getComponent(Collider)//获取碰撞体组件
         console.log(this.collider)
-        this.collider.on('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
-        this.collider.on('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
-        this.collider.on('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
+        this.collider.on('onTriggerEnter',this.onTriggerEnter,this)
+        // this.collider.on('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
+        // this.collider.on('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
+        // this.collider.on('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
     }
 
     protected onLoad(): void {
@@ -31,22 +33,33 @@ export class PlayerController extends Component {
         input.on(Input.EventType.KEY_PRESSING, this.onKeyPressing, this);
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
     }
-    onCollisionEnter(event:ICollisionEvent){
-        console.log("onCollisionEnter")
-    }
-    onCollisionExit(event:ICollisionEvent){
-        console.log("onCollisionExit")
-    }
-    onCollisionStay(event:ICollisionEvent){
-        console.log("onCollisionStay")
+    // onCollisionEnter(event:ICollisionEvent){
+    //     console.log("onCollisionEnter")
+    //     const food=event.otherCollider.getComponent(FoodController)
+    //     if(food!==null){
+    //         food.node.destroy()
+    //     }
+    // }
+    // onCollisionExit(event:ICollisionEvent){
+    //     console.log("onCollisionExit")
+    // }
+    // onCollisionStay(event:ICollisionEvent){
+    //     console.log("onCollisionStay")
+    // }
+    onTriggerEnter(event:ITriggerEvent){
+        const food=event.otherCollider.getComponent(FoodController)
+        if(food!==null){
+            food.node.destroy()
+        }
     }
     onDestroy (): void {
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.off(Input.EventType.KEY_PRESSING, this.onKeyPressing, this);
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
-        this.collider.off('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
-        this.collider.off('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
-        this.collider.off('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
+        this.collider.off('onTriggerEnter',this.onTriggerEnter,this)
+        // this.collider.off('onCollisionEnter',this.onCollisionEnter,this)//注册触发器进入事件
+        // this.collider.off('onCollisionExit',this.onCollisionExit,this)//注册触发器离开事件
+        // this.collider.off('onCollisionStay',this.onCollisionStay,this)//注册触发器停留事件
     }
     onKeyDown(event:EventKeyboard){
         // console.log("Key Down: ", event.keyCode);
